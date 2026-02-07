@@ -56,7 +56,7 @@ export default function FinalProposal({ node, onAnswer }) {
 
   return (
     <motion.div
-      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-8 sm:px-10 pb-24"
+      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 sm:px-10 md:px-12 lg:px-24 pb-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -117,7 +117,7 @@ export default function FinalProposal({ node, onAnswer }) {
             </motion.h1>
 
             <motion.p
-              className="text-rose-200/60 text-sm font-light mb-12 max-w-xs"
+              className="text-base sm:text-lg text-rose-200/60 font-light mb-20 max-w-sm sm:max-w-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -128,7 +128,7 @@ export default function FinalProposal({ node, onAnswer }) {
             {/* YES button */}
             <motion.button
               onClick={handleYes}
-              className="relative px-20 sm:px-24 py-5 sm:py-6 rounded-full text-lg sm:text-xl font-medium tracking-widest uppercase cursor-pointer overflow-hidden"
+              className="relative px-24 sm:px-28 py-6 sm:py-7 rounded-full text-lg sm:text-xl font-medium tracking-widest uppercase cursor-pointer overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #f43f5e 100%)',
                 backgroundSize: '200% 200%',

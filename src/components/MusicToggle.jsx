@@ -153,7 +153,7 @@ export default function MusicToggle() {
   return (
     <motion.button
       onClick={toggleMusic}
-      className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[calc(1.5rem+env(safe-area-inset-right))] z-50 flex items-center gap-2 px-4 py-2.5 rounded-full backdrop-blur-md border cursor-pointer"
+      className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[calc(1.5rem+env(safe-area-inset-right))] z-50 flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-md border cursor-pointer"
       style={{
         background: 'rgba(244, 63, 94, 0.15)',
         borderColor: 'rgba(244, 63, 94, 0.3)',
@@ -192,7 +192,7 @@ export default function MusicToggle() {
         ))}
       </div>
 
-      <span className="text-xs font-light text-rose-200 tracking-wide">
+      <span className="text-sm font-light text-rose-200 tracking-wider">
         {isPlaying ? 'Music On' : 'Music Off'}
       </span>
 

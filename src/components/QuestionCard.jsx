@@ -37,7 +37,7 @@ export default function QuestionCard({ node, onAnswer }) {
   return (
     <motion.div
       key={node.id}
-      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-8 sm:px-10 py-16 pb-24"
+      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 sm:px-10 md:px-12 lg:px-24 py-16 pb-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -74,7 +74,7 @@ export default function QuestionCard({ node, onAnswer }) {
 
         {/* Main text */}
         <motion.h1
-          className="text-3xl md:text-5xl font-light leading-tight tracking-tight mb-4"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight tracking-tight mb-4"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,19 +85,17 @@ export default function QuestionCard({ node, onAnswer }) {
 
         {/* Subtext */}
         {node.subtext && (
-          <motion.p
-            className="text-sm md:text-base text-rose-200/70 font-light max-w-xs sm:max-w-sm leading-relaxed mb-8 md:mb-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-          >
-            {node.subtext}
+                                <motion.p
+                                  className="text-base sm:text-lg text-rose-200/70 font-light max-w-sm sm:max-w-md leading-relaxed mb-12 md:mb-16"                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                    >            {node.subtext}
           </motion.p>
         )}
 
         {/* Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 w-full max-w-xs sm:max-w-sm"
+          className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-xs sm:max-w-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
@@ -123,7 +121,7 @@ function OptionButton({ option, index, isPrimary, total, onAnswer }) {
     <motion.button
       onClick={() => onAnswer(option)}
       className={`
-        relative overflow-hidden px-8 py-4 rounded-2xl text-sm font-medium tracking-wide
+        relative overflow-hidden px-10 py-5 rounded-3xl text-base sm:text-lg font-medium tracking-wide
         transition-colors duration-300 cursor-pointer
         ${total === 1 ? 'w-full' : 'flex-1'}
         ${
