@@ -153,12 +153,20 @@ export default function MusicToggle() {
   return (
     <motion.button
       onClick={toggleMusic}
-      className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[calc(1.5rem+env(safe-area-inset-right))] z-50 flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-md border cursor-pointer"
+      className="fixed z-50 flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl backdrop-blur-xl border cursor-pointer"
       style={{
-        background: 'rgba(139, 92, 246, 0.15)',
-        borderColor: 'rgba(139, 92, 246, 0.3)',
+        bottom: 'calc(0.9rem + env(safe-area-inset-bottom))',
+        right: 'calc(0.9rem + env(safe-area-inset-right))',
+        minWidth: '8.8rem',
+        background: 'rgba(18, 10, 32, 0.52)',
+        borderColor: 'rgba(167, 139, 250, 0.42)',
+        boxShadow: '0 10px 28px rgba(2, 0, 12, 0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
       }}
-      whileHover={{ scale: 1.05, borderColor: 'rgba(139, 92, 246, 0.6)' }}
+      whileHover={{
+        scale: 1.03,
+        borderColor: 'rgba(196, 181, 253, 0.62)',
+        boxShadow: '0 14px 34px rgba(2, 0, 12, 0.55), inset 0 1px 0 rgba(255,255,255,0.12)',
+      }}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -166,11 +174,11 @@ export default function MusicToggle() {
       aria-label={isPlaying ? 'Pause background music' : 'Play background music'}
     >
       {/* Animated bars */}
-      <div className="flex items-end gap-[3px] h-4">
+      <div className="flex items-end gap-[3px] h-4 shrink-0">
         {[0, 1, 2, 3].map((i) => (
           <motion.div
             key={i}
-            className="w-[3px] rounded-full bg-violet-400"
+            className="w-[3px] rounded-full bg-violet-300"
             animate={
               isPlaying
                 ? {
@@ -192,7 +200,7 @@ export default function MusicToggle() {
         ))}
       </div>
 
-      <span className="text-sm font-light text-violet-200 tracking-wider">
+      <span className="text-[0.8rem] sm:text-sm font-medium text-violet-100 tracking-wide whitespace-nowrap">
         {isPlaying ? 'Music On' : 'Music Off'}
       </span>
 

@@ -12,7 +12,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
   return (
     <motion.div
       key={node.id}
-      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 sm:px-10 md:px-12 lg:px-24 py-16 pb-24"
+      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 sm:px-10 md:px-12 lg:px-24 py-14 pb-28 sm:pb-32"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
@@ -29,7 +29,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto"
+        className="relative z-10 flex flex-col items-center text-center w-full max-w-2xl mx-auto px-4 sm:px-6 md:px-8 py-4"
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -37,13 +37,13 @@ export default function QuestionCard({ node, onAnswer, config }) {
       >
         {/* Glassmorphism card backdrop — border tinted by category */}
         <div
-          className="absolute -inset-8 sm:-inset-12 rounded-3xl"
+          className="absolute -inset-5 sm:-inset-8 md:-inset-10 rounded-[2rem]"
           style={{
-            background: 'rgba(15, 5, 25, 0.35)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: `1px solid ${cardBorder}`,
-            boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)`,
+            background: 'rgba(15, 5, 25, 0.42)',
+            backdropFilter: 'blur(22px)',
+            WebkitBackdropFilter: 'blur(22px)',
+            border: `1.5px solid ${cardBorder}`,
+            boxShadow: `0 14px 45px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08)`,
             transition: 'border-color 1s ease, box-shadow 1s ease',
           }}
         />
@@ -60,7 +60,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
         {/* Main text */}
         <motion.h1
-          className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-tight tracking-tight mb-4 text-violet-50"
+          className="relative max-w-[14ch] mx-auto text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-[1.08] tracking-tight mb-5 text-violet-50"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
         {/* Subtext */}
         {node.subtext && (
           <motion.p
-            className="relative text-base sm:text-lg text-violet-200/60 font-light max-w-sm sm:max-w-md leading-relaxed mb-12 md:mb-16"
+            className="relative text-base sm:text-lg text-violet-200/70 font-light max-w-sm sm:max-w-lg leading-relaxed mb-10 md:mb-12 px-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -83,7 +83,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
         {/* Buttons */}
         <motion.div
-          className="relative flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-xs sm:max-w-sm"
+          className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-md"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
@@ -111,26 +111,26 @@ function OptionButton({ option, index, isPrimary, total, onAnswer, accentHue, ac
     <motion.button
       onClick={() => onAnswer(option)}
       className={`
-        relative overflow-hidden px-10 py-5 rounded-3xl text-base sm:text-lg font-medium tracking-wide
+        relative overflow-hidden px-7 sm:px-8 py-4 rounded-2xl text-base sm:text-lg font-semibold leading-snug text-center min-h-[64px] sm:min-h-[70px]
         transition-colors duration-300 cursor-pointer
-        ${total === 1 ? 'w-full' : 'flex-1'}
+        ${total === 1 ? 'w-full' : 'flex-1 sm:basis-0'}
         ${
           isPrimary
             ? 'text-white shadow-lg border'
-            : 'bg-white/5 text-violet-100 border border-white/10 hover:bg-white/10 hover:border-violet-400/20'
+            : 'bg-white/8 text-violet-100 border border-white/20 hover:bg-white/12 hover:border-violet-300/30'
         }
       `}
       style={isPrimary ? {
         background: `linear-gradient(135deg, hsla(${accentHue}, ${accentSat}%, 55%, 0.85) 0%, hsla(${accentHue + 10}, ${accentSat}%, 48%, 0.85) 50%, hsla(${accentHue}, ${accentSat}%, 55%, 0.85) 100%)`,
-        borderColor: `hsla(${accentHue}, ${accentSat}%, 70%, 0.4)`,
-        boxShadow: `0 4px 20px hsla(${accentHue}, ${accentSat}%, 50%, 0.25)`,
+        borderColor: `hsla(${accentHue}, ${accentSat}%, 76%, 0.52)`,
+        boxShadow: `0 8px 24px hsla(${accentHue}, ${accentSat}%, 50%, 0.32)`,
         transition: 'background 1s ease, border-color 1s ease, box-shadow 1s ease',
       } : undefined}
       whileHover={{
-        scale: 1.03,
+        scale: 1.02,
         boxShadow: isPrimary
-          ? `0 8px 30px hsla(${accentHue}, ${accentSat}%, 50%, 0.35)`
-          : '0 4px 20px rgba(139, 92, 246, 0.1)',
+          ? `0 10px 32px hsla(${accentHue}, ${accentSat}%, 50%, 0.4)`
+          : '0 8px 24px rgba(139, 92, 246, 0.16)',
       }}
       whileTap={{ scale: 0.97 }}
       initial={{ opacity: 0, y: 10 }}
