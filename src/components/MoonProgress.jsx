@@ -47,6 +47,7 @@ function MoonIcon({ phase }) {
 
 export default function MoonProgress({ step, moonPhase }) {
   const phaseName = PHASE_NAMES[Math.min(step, PHASE_NAMES.length - 1)];
+  const progressLabel = `${Math.min(step, TOTAL_STEPS)}/${TOTAL_STEPS}`;
 
   return (
     <motion.div
@@ -68,7 +69,7 @@ export default function MoonProgress({ step, moonPhase }) {
           textAlign: 'center',
         }}
       >
-        {phaseName}
+        {phaseName} {progressLabel}
       </span>
 
       <div className="flex items-center gap-1.5">

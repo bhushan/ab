@@ -1,7 +1,7 @@
 /**
  * Valentine's Proposal — 100-Question Pool with Smart Shuffle
  *
- * On each visit, 10 questions are randomly selected from a pool of 100,
+ * On each visit, 12 questions are randomly selected from a pool of 100,
  * arranged in an emotional arc: opening → middle → closing → proposal.
  * She loves the moon 🌙 — moonlight questions are woven throughout.
  *
@@ -1912,32 +1912,32 @@ function shuffle(arr) {
 }
 
 /**
- * Build a randomized path of 10 questions with:
- *  - 3 opening (flirty/witty)  → 4 middle (romantic/deeper)  → 3 closing (intense)
+ * Build a randomized path of 12 questions with:
+ *  - 4 opening (flirty/witty)  → 4 middle (romantic/deeper)  → 4 closing (intense)
  *  - At least 2 moonlight questions guaranteed
  *  - No two consecutive questions share the same category
  *  - Last question is always moonlight (she loves the moon 🌙)
  */
 export function buildPath() {
-  const byPhase = (phase) => questionPool.filter((q) => q.phase === phase);
+  const byPhase = (phase) => questionPool.filter((q) => q.phase === phase && q.type === 'question');
 
-  let opening = shuffle(byPhase('opening')).slice(0, 5);
+  let opening = shuffle(byPhase('opening')).slice(0, 7);
   let middle = shuffle(byPhase('middle')).slice(0, 7);
-  let closing = shuffle(byPhase('closing')).slice(0, 6);
+  let closing = shuffle(byPhase('closing')).slice(0, 7);
 
   // Ensure last closing question is moonlight
   const moonClosing = closing.find((q) => q.category === 'moonlight');
   const otherClosing = closing.filter((q) => q !== moonClosing);
   if (moonClosing) {
-    closing = [...otherClosing.slice(0, 2), moonClosing];
+    closing = [...otherClosing.slice(0, 3), moonClosing];
   } else {
     const fallback = byPhase('closing').find((q) => q.category === 'moonlight');
-    closing = [...otherClosing.slice(0, 2), fallback || otherClosing[2]];
+    closing = [...otherClosing.slice(0, 3), fallback || otherClosing[3]];
   }
 
-  opening = opening.slice(0, 3);
+  opening = opening.slice(0, 4);
   middle = middle.slice(0, 4);
-  closing = closing.slice(0, 3);
+  closing = closing.slice(0, 4);
 
   let selected = [...opening, ...middle, ...closing];
 
@@ -1945,7 +1945,7 @@ export function buildPath() {
   const moonCount = selected.filter((q) => q.category === 'moonlight').length;
   if (moonCount < 2) {
     const allMoon = shuffle(questionPool.filter(
-      (q) => q.category === 'moonlight' && !selected.includes(q)
+      (q) => q.type === 'question' && q.category === 'moonlight' && !selected.includes(q)
     ));
     if (allMoon.length > 0) {
       const replaceIdx = middle.findIndex((q) => q.category !== 'moonlight');
@@ -1982,7 +1982,7 @@ const poolIndex = Object.fromEntries(questionPool.map((q) => [q.id, q]));
 
 export const getNode = (id) => fixedNodes[id] || poolIndex[id] || null;
 
-// intro (1) + 10 questions + preProposal (1) = 12 steps before final
+// 12 question steps map to 12 moon phases; final proposal is forced to full moon
 export const TOTAL_STEPS = 12;
 
 export default questionPool;

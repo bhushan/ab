@@ -117,7 +117,8 @@ export function getVisualConfig(step, totalSteps = 12, category = 'intro') {
 
     // Moon glow intensity — barely visible at new moon, radiant at full
     moonGlow: lerp(0.05, 1.0, t),
-    moonSize: lerp(0.85, 1.05, t),
+    // Larger visual change so growth is clearly noticeable over 12 prompts
+    moonSize: lerp(0.72, 1.25, t),
 
     // Ambient light — warmth from category blended with progress
     lightIntensity: lerp(0.15, 0.85, t) * (0.8 + tone.warmth * 0.2),

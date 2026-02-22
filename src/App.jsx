@@ -14,6 +14,13 @@ export default function App() {
   const [step, setStep] = useState(0);
 
   const currentNode = getNode(path[step]);
+  const normalizedText = (currentNode?.text || '').toLowerCase();
+  const isValentineQuestion = normalizedText.includes('will you be my valentine');
+  const questionsAsked = path
+    .slice(0, step + 1)
+    .reduce((count, id) => count + (getNode(id)?.type === 'question' ? 1 : 0), 0);
+  const waxingMoonStep = Math.min(Math.max(questionsAsked - 1, 0), TOTAL_STEPS - 1);
+  const moonStep = isValentineQuestion ? TOTAL_STEPS : waxingMoonStep;
 
   const handleAnswer = useCallback((option) => {
     const node = getNode(path[step]);
@@ -32,14 +39,14 @@ export default function App() {
   const isFinal = currentNode?.type === 'final';
   const isCelebration = currentNode?.type === 'celebration';
 
-  const visualConfig = getVisualConfig(step, TOTAL_STEPS, currentNode?.category);
+  const visualConfig = getVisualConfig(moonStep, TOTAL_STEPS, currentNode?.category);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
       <CosmicScene config={visualConfig} />
 
       {!isCelebration && (
-        <MoonProgress step={step} moonPhase={visualConfig.moonPhase} />
+        <MoonProgress step={moonStep} moonPhase={visualConfig.moonPhase} />
       )}
 
       <AnimatePresence mode="wait">
