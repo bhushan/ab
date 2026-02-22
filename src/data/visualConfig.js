@@ -1,5 +1,5 @@
 // Pure functions mapping step/progress to visual parameters
-// step ranges from 0 to totalSteps (typically 12)
+// step ranges from 0 to totalSteps (typically 20)
 // Each step represents a lunar phase from New Moon → Full Moon,
 // with corresponding weather/atmosphere shifts.
 // Category tones overlay mood-specific colors on each question.
@@ -56,23 +56,37 @@ const CATEGORY_TONES = {
   celebration: { hueShift: 0,   accentHue: 50,  accentSat: 85, warmth: 1.0, sparkle: 2.0,  glowHue: 50,  glowSat: 80, cardBorder: 'rgba(253, 224, 71, 0.30)' },
 };
 
-function getAtmosphere(step) {
-  const idx = Math.min(step, PHASE_ATMOSPHERES.length - 1);
-  return PHASE_ATMOSPHERES[idx];
+function getAtmosphere(step, totalSteps) {
+  const safeTotal = Math.max(totalSteps, 1);
+  const scaled = Math.min(Math.max(step / safeTotal, 0), 1) * (PHASE_ATMOSPHERES.length - 1);
+  const startIdx = Math.floor(scaled);
+  const endIdx = Math.min(startIdx + 1, PHASE_ATMOSPHERES.length - 1);
+  const blend = scaled - startIdx;
+  const start = PHASE_ATMOSPHERES[startIdx];
+  const end = PHASE_ATMOSPHERES[endIdx];
+
+  return {
+    skyH: lerp(start.skyH, end.skyH, blend),
+    skyS: lerp(start.skyS, end.skyS, blend),
+    skyL: lerp(start.skyL, end.skyL, blend),
+    cloudOpacity: lerp(start.cloudOpacity, end.cloudOpacity, blend),
+    mistOpacity: lerp(start.mistOpacity, end.mistOpacity, blend),
+    windSpeed: lerp(start.windSpeed, end.windSpeed, blend),
+  };
 }
 
 function getCategoryTone(category) {
   return CATEGORY_TONES[category] || CATEGORY_TONES.intro;
 }
 
-export function getVisualConfig(step, totalSteps = 12, category = 'intro') {
+export function getVisualConfig(step, totalSteps = 20, category = 'intro') {
   const t = Math.min(step / totalSteps, 1); // 0 → 1
 
   // Moon phase: 0 = new moon, 1 = full moon
   const moonPhase = t;
 
   // Weather atmosphere for this lunar phase
-  const atmo = getAtmosphere(step);
+  const atmo = getAtmosphere(step, totalSteps);
 
   // Category-specific tone overlay
   const tone = getCategoryTone(category);
@@ -117,7 +131,7 @@ export function getVisualConfig(step, totalSteps = 12, category = 'intro') {
 
     // Moon glow intensity — barely visible at new moon, radiant at full
     moonGlow: lerp(0.05, 1.0, t),
-    // Larger visual change so growth is clearly noticeable over 12 prompts
+    // Larger visual change so growth is clearly noticeable over long journeys
     moonSize: lerp(0.72, 1.25, t),
 
     // Ambient light — warmth from category blended with progress

@@ -1,35 +1,20 @@
 import { motion } from 'framer-motion';
 
-// 13 lunar phases (steps 0–12): new moon → waxing crescent → first quarter → … → full moon
-// Each entry: { name, maskCx, maskCy, maskR, showDark }
-// maskCx controls the shadow circle position to shape the illuminated area.
-// For "new moon" we cover entirely; for "full moon" we push the mask offscreen.
-const LUNAR_PHASES = [
-  { name: 'New Moon',        maskCx: 50,  visible: 0.02 }, // step 0 – barely visible sliver
-  { name: 'Waxing Crescent', maskCx: 38,  visible: 0.15 },
-  { name: 'Waxing Crescent', maskCx: 30,  visible: 0.25 },
-  { name: 'First Quarter',   maskCx: 18,  visible: 0.40 },
-  { name: 'First Quarter',   maskCx: 8,   visible: 0.50 },
-  { name: 'Waxing Gibbous',  maskCx: -2,  visible: 0.60 },
-  { name: 'Waxing Gibbous',  maskCx: -14, visible: 0.70 },
-  { name: 'Waxing Gibbous',  maskCx: -26, visible: 0.78 },
-  { name: 'Waxing Gibbous',  maskCx: -38, visible: 0.85 },
-  // Keep slight shadow overlap until step 11 so only step 12 can be fully lit.
-  { name: 'Nearly Full',     maskCx: -40, visible: 0.90 },
-  { name: 'Nearly Full',     maskCx: -43, visible: 0.95 },
-  { name: 'Almost Full',     maskCx: -46, visible: 0.98 },
-  { name: 'Full Moon',       maskCx: -70, visible: 1.0  }, // step 12 – fully illuminated
-];
+// Moon shadow control points from new moon -> full moon.
+// We interpolate across these points so the moon supports any question count.
+const MASK_CX_POINTS = [50, 38, 30, 18, 8, -2, -14, -26, -38, -40, -43, -46, -70];
 
-function getPhase(step) {
-  const idx = Math.min(step, LUNAR_PHASES.length - 1);
-  return LUNAR_PHASES[idx];
+function interpolate(points, t) {
+  const clamped = Math.min(Math.max(t, 0), 1) * (points.length - 1);
+  const startIdx = Math.floor(clamped);
+  const endIdx = Math.min(startIdx + 1, points.length - 1);
+  const blend = clamped - startIdx;
+  return points[startIdx] + (points[endIdx] - points[startIdx]) * blend;
 }
 
 export default function MoonOrb({ config, offsetX, offsetY }) {
-  const { moonGlow, moonSize, breathingSpeed, step } = config;
-
-  const phase = getPhase(step);
+  const { moonGlow, moonSize, breathingSpeed, moonPhase } = config;
+  const maskCx = interpolate(MASK_CX_POINTS, moonPhase);
   const moonRadius = 50;
 
   return (
@@ -98,7 +83,7 @@ export default function MoonOrb({ config, offsetX, offsetY }) {
           <mask id="moonMask">
             <rect width="100" height="100" fill="white" />
             <circle
-              cx={phase.maskCx}
+              cx={maskCx}
               cy={48}
               r={moonRadius - 2}
               fill="black"

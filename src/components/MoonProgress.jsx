@@ -46,7 +46,10 @@ function MoonIcon({ phase }) {
 }
 
 export default function MoonProgress({ step, moonPhase }) {
-  const phaseName = PHASE_NAMES[Math.min(step, PHASE_NAMES.length - 1)];
+  const phaseIndex = Math.round(
+    Math.min(Math.max(moonPhase, 0), 1) * (PHASE_NAMES.length - 1)
+  );
+  const phaseName = PHASE_NAMES[phaseIndex];
   const progressLabel = `${Math.min(step, TOTAL_STEPS)}/${TOTAL_STEPS}`;
 
   return (

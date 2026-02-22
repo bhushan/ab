@@ -1,9 +1,8 @@
 /**
  * Dynamic Valentine's journey engine.
  *
- * 100 unique questions across 8 emotional categories.
- * Each page load builds a fresh 8-question path following:
- *   playful → destiny → memory → moonlight → future → support → romantic → cinematic
+ * 100 unique questions across emotional categories.
+ * Each page load builds a fresh 20-question path following a curated arc.
  * Both answer choices always advance — the journey converges to the final proposal.
  */
 
@@ -1085,7 +1084,7 @@ const QUESTION_BANK = [
 // JOURNEY BUILDER
 // ═══════════════════════════════════════════════════════════════
 
-// Emotional arc: ice-breaker → cosmic → nostalgic → atmospheric → dreams → trust → love → climax
+// 20-step emotional arc: playful openings -> deeper connection -> cinematic close.
 const CATEGORY_FLOW = [
   'playful',
   'destiny',
@@ -1095,6 +1094,18 @@ const CATEGORY_FLOW = [
   'support',
   'romantic',
   'cinematic',
+  'playful',
+  'memory',
+  'future',
+  'moonlight',
+  'support',
+  'romantic',
+  'destiny',
+  'cinematic',
+  'playful',
+  'future',
+  'romantic',
+  'moonlight',
 ];
 
 /** Fisher-Yates shuffle */
@@ -1107,13 +1118,30 @@ function shuffle(arr) {
   return a;
 }
 
-/** Build a unique 8-question journey (runs once on module load) */
+/** Build a unique 20-question journey (runs once on module load) */
 function buildJourney() {
   const questions = [];
 
+  // Pre-shuffle each category once, then draw without replacement for this page load.
+  const categoryPools = {};
+  const categoryCursor = {};
+  for (const category of [...new Set(CATEGORY_FLOW)]) {
+    categoryPools[category] = shuffle(QUESTION_BANK.filter((q) => q.category === category));
+    categoryCursor[category] = 0;
+  }
+
   for (const category of CATEGORY_FLOW) {
-    const pool = QUESTION_BANK.filter((q) => q.category === category);
-    const picked = shuffle(pool)[0];
+    const pool = categoryPools[category];
+    const cursor = categoryCursor[category];
+
+    if (!pool || pool.length === 0) {
+      continue;
+    }
+
+    // Fallback wraps only if a category is requested more times than available questions.
+    const picked = pool[cursor % pool.length];
+    categoryCursor[category] = cursor + 1;
+
     questions.push({
       ...picked,
       id: `dq_${questions.length}`,
@@ -1147,7 +1175,7 @@ const nodes = {
 // ═══════════════════════════════════════════════════════════════
 
 export const START_NODE_ID = 'intro';
-export const TOTAL_STEPS = CATEGORY_FLOW.length; // 8
+export const TOTAL_STEPS = CATEGORY_FLOW.length; // 20
 
 export function getNode(id) {
   return nodes[id] || null;
