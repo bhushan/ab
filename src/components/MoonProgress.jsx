@@ -51,7 +51,7 @@ export default function MoonProgress({ step, moonPhase }) {
 
   return (
     <motion.div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2"
+      className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 sm:gap-2"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
@@ -59,7 +59,7 @@ export default function MoonProgress({ step, moonPhase }) {
       <MoonIcon phase={moonPhase} />
 
       <span
-        className="text-xs tracking-wider uppercase"
+        className="text-[0.65rem] sm:text-xs tracking-wider uppercase"
         style={{
           color: 'rgba(196, 181, 253, 0.6)',
           fontFamily: 'inherit',
@@ -72,7 +72,7 @@ export default function MoonProgress({ step, moonPhase }) {
         {phaseName} {progressLabel}
       </span>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1 sm:gap-1.5">
         {Array.from({ length: TOTAL_STEPS + 1 }).map((_, i) => (
           <motion.div
             key={i}
