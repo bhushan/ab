@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+import { motion } from 'framer-motion';
 
-export default function CosmicBackground({ config }) {
-  const { progress, lightIntensity } = config;
+export default function CosmicBackground({ config, offsetX, offsetY }) {
+  const { progress, lightIntensity, cloudOpacity, mistOpacity } = config;
 
   const gradientStyle = useMemo(() => {
     const t = progress;
@@ -37,10 +38,52 @@ export default function CosmicBackground({ config }) {
   return (
     <div className="absolute inset-0" aria-hidden="true">
       {/* Main layered gradient */}
-      <div className="absolute inset-0" style={gradientStyle} />
+      <motion.div
+        className="absolute inset-0"
+        style={{ ...gradientStyle, x: offsetX, y: offsetY }}
+      />
 
       {/* Nebula light waves */}
       <div className="absolute inset-0" style={nebulaStyle} />
+
+      {/* Drifting cloud layer — thick at new moon, clears by full moon */}
+      {cloudOpacity > 0 && (
+        <motion.div
+          className="absolute inset-0"
+          animate={{ x: [-20, 20, -20] }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            background: `
+              radial-gradient(ellipse 90% 35% at 25% 30%, rgba(60, 50, 80, ${cloudOpacity}) 0%, transparent 70%),
+              radial-gradient(ellipse 70% 40% at 65% 50%, rgba(50, 40, 70, ${cloudOpacity * 0.8}) 0%, transparent 65%),
+              radial-gradient(ellipse 80% 30% at 80% 25%, rgba(55, 45, 75, ${cloudOpacity * 0.6}) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 25% at 40% 70%, rgba(45, 35, 65, ${cloudOpacity * 0.5}) 0%, transparent 55%)
+            `,
+            filter: 'blur(25px)',
+            transition: 'opacity 2s ease',
+          }}
+        />
+      )}
+
+      {/* Low mist layer — hugs the bottom, fades with moon phases */}
+      {mistOpacity > 0 && (
+        <motion.div
+          className="absolute inset-x-0 bottom-0"
+          style={{ height: '40%' }}
+          animate={{ x: [10, -10, 10] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              background: `linear-gradient(to top, rgba(80, 70, 100, ${mistOpacity}) 0%, rgba(60, 50, 80, ${mistOpacity * 0.5}) 40%, transparent 100%)`,
+              filter: 'blur(15px)',
+              transition: 'opacity 2s ease',
+            }}
+          />
+        </motion.div>
+      )}
 
       {/* Film grain overlay */}
       <div
@@ -50,11 +93,12 @@ export default function CosmicBackground({ config }) {
         }}
       />
 
-      {/* Vignette */}
+      {/* Vignette — stronger at new moon */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.5) 100%)',
+          background: `radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,${0.4 + (1 - progress) * 0.2}) 100%)`,
+          transition: 'background 1.5s ease',
         }}
       />
     </div>

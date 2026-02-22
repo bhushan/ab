@@ -3,7 +3,8 @@ import { useMotionValue, useTransform, useSpring } from 'framer-motion';
 import CosmicBackground from './CosmicBackground';
 import StarField from './StarField';
 import MoonOrb from './MoonOrb';
-import GirlSilhouette from './GirlSilhouette';
+import MountainSilhouette from './MountainSilhouette';
+import FlyingBirds from './FlyingBirds';
 import NebulaCurtains from './NebulaCurtains';
 import AmbientGlow from './AmbientGlow';
 
@@ -25,7 +26,7 @@ export default function CosmicScene({ config }) {
   const starOffsetY = useTransform(smoothY, [0, 1], [15, -15]);
   const moonOffsetX = useTransform(smoothX, [0, 1], [8, -8]);
   const moonOffsetY = useTransform(smoothY, [0, 1], [8, -8]);
-  const girlOffsetX = useTransform(smoothX, [0, 1], [-3, 3]); // inverse
+  const mountainOffsetX = useTransform(smoothX, [0, 1], [-4, 4]); // inverse, subtle
 
   // Check for touch device
   const isTouchDevice = useRef(false);
@@ -53,7 +54,6 @@ export default function CosmicScene({ config }) {
       mouseY.set(0.5 + Math.cos(t * 0.7) * 0.1);
       frame = requestAnimationFrame(sway);
     };
-    // Delay check - might not be set on first render
     const timeout = setTimeout(() => {
       if (isTouchDevice.current) sway();
     }, 100);
@@ -87,9 +87,10 @@ export default function CosmicScene({ config }) {
         offsetX={moonOffsetX}
         offsetY={moonOffsetY}
       />
-      <GirlSilhouette
+      <FlyingBirds config={config} />
+      <MountainSilhouette
         config={config}
-        offsetX={girlOffsetX}
+        offsetX={mountainOffsetX}
       />
       <AmbientGlow
         mouseX={smoothX}
