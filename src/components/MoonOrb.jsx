@@ -14,10 +14,11 @@ const LUNAR_PHASES = [
   { name: 'Waxing Gibbous',  maskCx: -14, visible: 0.70 },
   { name: 'Waxing Gibbous',  maskCx: -26, visible: 0.78 },
   { name: 'Waxing Gibbous',  maskCx: -38, visible: 0.85 },
-  { name: 'Nearly Full',     maskCx: -52, visible: 0.90 },
-  { name: 'Nearly Full',     maskCx: -68, visible: 0.95 },
-  { name: 'Almost Full',     maskCx: -90, visible: 0.98 },
-  { name: 'Full Moon',       maskCx: -120, visible: 1.0  }, // step 12 – fully illuminated
+  // Keep slight shadow overlap until step 11 so only step 12 can be fully lit.
+  { name: 'Nearly Full',     maskCx: -40, visible: 0.90 },
+  { name: 'Nearly Full',     maskCx: -43, visible: 0.95 },
+  { name: 'Almost Full',     maskCx: -46, visible: 0.98 },
+  { name: 'Full Moon',       maskCx: -70, visible: 1.0  }, // step 12 – fully illuminated
 ];
 
 function getPhase(step) {
