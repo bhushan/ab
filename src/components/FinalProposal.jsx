@@ -56,7 +56,7 @@ export default function FinalProposal({ node, onAnswer }) {
 
   return (
     <motion.div
-      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-4 sm:px-8 md:px-12 lg:px-24 pb-20 sm:pb-24"
+      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-7 sm:px-10 md:px-12 lg:px-24 pb-16 sm:pb-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
@@ -81,7 +81,7 @@ export default function FinalProposal({ node, onAnswer }) {
         {!answered ? (
           <motion.div
             key="proposal"
-            className="relative z-10 flex flex-col items-center text-center"
+            className="relative z-10 flex flex-col items-center text-center px-5 sm:px-2"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
@@ -89,7 +89,7 @@ export default function FinalProposal({ node, onAnswer }) {
           >
             {/* Glassmorphism backdrop */}
             <div
-              className="absolute -inset-6 sm:-inset-10 md:-inset-14 rounded-3xl"
+              className="absolute -inset-3 sm:-inset-10 md:-inset-14 rounded-2xl sm:rounded-3xl"
               style={{
                 background: 'rgba(15, 5, 25, 0.3)',
                 backdropFilter: 'blur(20px)',
@@ -101,7 +101,7 @@ export default function FinalProposal({ node, onAnswer }) {
 
             {/* Animated heart */}
             <motion.div
-              className="relative text-5xl sm:text-7xl md:text-8xl mb-6 sm:mb-8"
+              className="relative text-4xl sm:text-7xl md:text-8xl mb-4 sm:mb-8"
               animate={{ scale: [1, 1.15, 1] }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
             >
@@ -110,7 +110,7 @@ export default function FinalProposal({ node, onAnswer }) {
 
             {/* The question */}
             <motion.h1
-              className="relative text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extralight tracking-tight mb-3 sm:mb-4"
+              className="relative text-xl sm:text-3xl md:text-5xl lg:text-7xl font-extralight tracking-tight mb-2 sm:mb-4"
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ export default function FinalProposal({ node, onAnswer }) {
             </motion.h1>
 
             <motion.p
-              className="relative text-sm sm:text-base md:text-lg text-violet-200/60 font-light mb-14 sm:mb-20 max-w-sm sm:max-w-md"
+              className="relative text-xs sm:text-base md:text-lg text-violet-200/60 font-light mb-10 sm:mb-20 max-w-[260px] sm:max-w-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -135,7 +135,7 @@ export default function FinalProposal({ node, onAnswer }) {
             {/* YES button - purple-gold gradient */}
             <motion.button
               onClick={handleYes}
-              className="relative px-16 sm:px-24 md:px-28 py-5 sm:py-6 md:py-7 rounded-full text-base sm:text-lg md:text-xl font-medium tracking-widest uppercase cursor-pointer overflow-hidden"
+              className="relative px-12 sm:px-24 md:px-28 py-4 sm:py-6 md:py-7 rounded-full text-sm sm:text-lg md:text-xl font-medium tracking-widest uppercase cursor-pointer overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 30%, #fbbf24 70%, #fcd34d 100%)',
                 backgroundSize: '200% 200%',
@@ -198,13 +198,13 @@ function CelebrationView() {
   return (
     <motion.div
       key="celebration"
-      className="relative z-10 flex flex-col items-center text-center px-5 sm:px-8 md:px-10"
+      className="relative z-10 flex flex-col items-center text-center px-6 sm:px-8 md:px-10"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
     >
       <motion.div
-        className="text-5xl sm:text-7xl md:text-8xl mb-4 sm:mb-6"
+        className="text-4xl sm:text-7xl md:text-8xl mb-3 sm:mb-6"
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ delay: 0.2, type: 'spring', stiffness: 150, damping: 12 }}
@@ -213,7 +213,7 @@ function CelebrationView() {
       </motion.div>
 
       <motion.h1
-        className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mb-4"
+        className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mb-3 sm:mb-4"
         style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

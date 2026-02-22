@@ -12,7 +12,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
   return (
     <motion.div
       key={node.id}
-      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-4 sm:px-8 md:px-12 lg:px-24 py-10 pb-24 sm:py-14 sm:pb-32"
+      className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-7 sm:px-10 md:px-12 lg:px-24 py-8 pb-20 sm:py-14 sm:pb-32"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
@@ -29,7 +29,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 flex flex-col items-center text-center w-full max-w-xl sm:max-w-2xl mx-auto px-3 sm:px-6 md:px-8 py-4"
+        className="relative z-10 flex flex-col items-center text-center w-full max-w-sm sm:max-w-xl md:max-w-2xl mx-auto px-5 sm:px-6 md:px-8 py-5 sm:py-4"
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -37,7 +37,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
       >
         {/* Glassmorphism card backdrop — border tinted by category */}
         <div
-          className="absolute -inset-4 sm:-inset-8 md:-inset-10 rounded-[2rem]"
+          className="absolute -inset-2 sm:-inset-8 md:-inset-10 rounded-2xl sm:rounded-[2rem]"
           style={{
             background: 'rgba(15, 5, 25, 0.42)',
             backdropFilter: 'blur(22px)',
@@ -50,7 +50,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
         {/* Emoji */}
         <motion.div
-          className="relative text-4xl mb-4 sm:mb-6 md:mb-8 sm:text-5xl md:text-6xl"
+          className="relative text-3xl sm:text-5xl md:text-6xl mb-2.5 sm:mb-6 md:mb-8"
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
@@ -60,7 +60,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
         {/* Main text */}
         <motion.h1
-          className="relative max-w-[14ch] mx-auto text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extralight leading-[1.08] tracking-tight mb-4 sm:mb-5 text-violet-50"
+          className="relative max-w-[18ch] sm:max-w-[14ch] mx-auto text-xl sm:text-3xl md:text-5xl lg:text-6xl font-extralight leading-[1.12] sm:leading-[1.08] tracking-tight mb-2.5 sm:mb-5 text-violet-50"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
         {/* Subtext */}
         {node.subtext && (
           <motion.p
-            className="relative text-sm sm:text-base md:text-lg text-violet-200/70 font-light max-w-sm sm:max-w-lg leading-relaxed mb-8 sm:mb-10 md:mb-12 px-2"
+            className="relative text-xs sm:text-base md:text-lg text-violet-200/70 font-light max-w-[260px] sm:max-w-lg leading-relaxed mb-5 sm:mb-10 md:mb-12 px-1 sm:px-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -83,7 +83,7 @@ export default function QuestionCard({ node, onAnswer, config }) {
 
         {/* Buttons */}
         <motion.div
-          className="relative flex flex-col sm:flex-row gap-2.5 sm:gap-3 md:gap-4 w-full max-w-sm sm:max-w-md"
+          className="relative flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 w-full max-w-[260px] sm:max-w-md"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
@@ -111,7 +111,7 @@ function OptionButton({ option, index, isPrimary, total, onAnswer, accentHue, ac
     <motion.button
       onClick={() => onAnswer(option)}
       className={`
-        relative overflow-hidden px-5 sm:px-7 md:px-8 py-3.5 sm:py-4 rounded-2xl text-sm sm:text-base md:text-lg font-semibold leading-snug text-center min-h-[56px] sm:min-h-[64px] md:min-h-[70px]
+        relative overflow-hidden px-4 sm:px-7 md:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl text-[0.8rem] sm:text-base md:text-lg font-semibold leading-snug text-center min-h-[44px] sm:min-h-[64px] md:min-h-[70px]
         transition-colors duration-300 cursor-pointer
         ${total === 1 ? 'w-full' : 'flex-1 sm:basis-0'}
         ${

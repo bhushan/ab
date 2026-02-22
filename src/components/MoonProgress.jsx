@@ -21,7 +21,7 @@ const PHASE_NAMES = [
 function MoonIcon({ phase }) {
   const maskOffset = -12 + phase * 24;
   return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 sm:w-5 sm:h-5">
       <defs>
         <mask id="progressMoonMask">
           <rect width="24" height="24" fill="white" />
@@ -65,21 +65,21 @@ export default function MoonProgress({ step, moonPhase }) {
           fontFamily: 'inherit',
           letterSpacing: '0.1em',
           transition: 'color 0.5s ease',
-          minWidth: '6rem',
+          minWidth: '5rem',
           textAlign: 'center',
         }}
       >
         {phaseName} {progressLabel}
       </span>
 
-      <div className="flex items-center gap-1 sm:gap-1.5">
+      <div className="flex items-center gap-[3px] sm:gap-1.5">
         {Array.from({ length: TOTAL_STEPS + 1 }).map((_, i) => (
           <motion.div
             key={i}
             className="rounded-full"
             style={{
-              width: i <= step ? 6 : 4,
-              height: i <= step ? 6 : 4,
+              width: i <= step ? 5 : 3,
+              height: i <= step ? 5 : 3,
               background: i <= step
                 ? 'rgba(196, 181, 253, 0.8)'
                 : 'rgba(139, 92, 246, 0.25)',
