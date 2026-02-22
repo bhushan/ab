@@ -62,7 +62,7 @@ const questionNodes = {
     type: 'question',
     category: 'playful',
     emoji: '😂',
-    text: 'Could you survive my terrible jokes... forever, Sweetu?',
+    text: 'Could you survive my terrible jokes... forever?',
     subtext: 'Be honest. This is a high-stakes compatibility test.',
     options: [
       { label: 'Yes, tell me one', tone: 'playful', nextId: 'q2_joke_delivered' },
