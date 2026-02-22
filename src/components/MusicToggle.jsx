@@ -155,10 +155,10 @@ export default function MusicToggle() {
       onClick={toggleMusic}
       className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[calc(1.5rem+env(safe-area-inset-right))] z-50 flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-md border cursor-pointer"
       style={{
-        background: 'rgba(244, 63, 94, 0.15)',
-        borderColor: 'rgba(244, 63, 94, 0.3)',
+        background: 'rgba(139, 92, 246, 0.15)',
+        borderColor: 'rgba(139, 92, 246, 0.3)',
       }}
-      whileHover={{ scale: 1.05, borderColor: 'rgba(244, 63, 94, 0.6)' }}
+      whileHover={{ scale: 1.05, borderColor: 'rgba(139, 92, 246, 0.6)' }}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export default function MusicToggle() {
         {[0, 1, 2, 3].map((i) => (
           <motion.div
             key={i}
-            className="w-[3px] rounded-full bg-rose-400"
+            className="w-[3px] rounded-full bg-violet-400"
             animate={
               isPlaying
                 ? {
@@ -192,7 +192,7 @@ export default function MusicToggle() {
         ))}
       </div>
 
-      <span className="text-sm font-light text-rose-200 tracking-wider">
+      <span className="text-sm font-light text-violet-200 tracking-wider">
         {isPlaying ? 'Music On' : 'Music Off'}
       </span>
 
@@ -200,7 +200,7 @@ export default function MusicToggle() {
       <AnimatePresence>
         {!hasInteracted && (
           <motion.div
-            className="absolute inset-0 rounded-full border border-rose-400/40"
+            className="absolute inset-0 rounded-full border border-violet-400/40"
             animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
             exit={{ opacity: 0 }}

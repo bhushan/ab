@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { getNode, buildPath } from './data/questionTree';
+import { getNode, buildPath, TOTAL_STEPS } from './data/questionTree';
+import { getVisualConfig } from './data/visualConfig';
 import { trackResponse } from './utils/trackResponse';
-import HeartParticles from './components/HeartParticles';
-import BackgroundGlow from './components/BackgroundGlow';
-import ProgressIndicator from './components/ProgressIndicator';
+import CosmicScene from './components/CosmicScene';
+import MoonProgress from './components/MoonProgress';
 import MusicToggle from './components/MusicToggle';
 import QuestionCard from './components/QuestionCard';
 import FinalProposal from './components/FinalProposal';
@@ -31,14 +31,16 @@ export default function App() {
 
   const isFinal = currentNode?.type === 'final';
   const isCelebration = currentNode?.type === 'celebration';
-  const particleIntensity = isCelebration ? 2.5 : isFinal ? 1.5 : 1;
+
+  const visualConfig = getVisualConfig(step, TOTAL_STEPS);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <BackgroundGlow />
-      <HeartParticles intensity={particleIntensity} />
+      <CosmicScene config={visualConfig} />
 
-      {!isCelebration && <ProgressIndicator depth={step} />}
+      {!isCelebration && (
+        <MoonProgress step={step} moonPhase={visualConfig.moonPhase} />
+      )}
 
       <AnimatePresence mode="wait">
         {isFinal || isCelebration ? (

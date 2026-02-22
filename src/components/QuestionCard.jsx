@@ -1,38 +1,7 @@
 import { motion } from 'framer-motion';
 
-const categoryGradients = {
-  intro: 'from-rose-950/40 via-pink-900/20 to-transparent',
-  destiny: 'from-violet-950/40 via-purple-900/20 to-transparent',
-  memory: 'from-amber-950/30 via-rose-900/20 to-transparent',
-  romantic: 'from-rose-950/40 via-red-900/20 to-transparent',
-  playful: 'from-pink-950/30 via-fuchsia-900/20 to-transparent',
-  future: 'from-indigo-950/30 via-violet-900/20 to-transparent',
-  emotional: 'from-rose-950/40 via-pink-900/30 to-transparent',
-  curious: 'from-amber-950/30 via-orange-900/20 to-transparent',
-  cinematic: 'from-slate-950/40 via-rose-950/30 to-transparent',
-  proposal: 'from-rose-950/50 via-pink-900/30 to-transparent',
-  moonlight: 'from-indigo-950/40 via-slate-900/20 to-transparent',
-};
-
-const categoryGlows = {
-  intro: 'rgba(244, 63, 94, 0.08)',
-  destiny: 'rgba(139, 92, 246, 0.08)',
-  memory: 'rgba(251, 191, 36, 0.06)',
-  romantic: 'rgba(244, 63, 94, 0.1)',
-  playful: 'rgba(236, 72, 153, 0.08)',
-  future: 'rgba(139, 92, 246, 0.08)',
-  emotional: 'rgba(244, 63, 94, 0.1)',
-  curious: 'rgba(251, 191, 36, 0.06)',
-  cinematic: 'rgba(244, 63, 94, 0.12)',
-  proposal: 'rgba(244, 63, 94, 0.15)',
-  moonlight: 'rgba(186, 230, 253, 0.08)',
-};
-
 export default function QuestionCard({ node, onAnswer }) {
   if (!node) return null;
-
-  const gradient = categoryGradients[node.category] || categoryGradients.romantic;
-  const glow = categoryGlows[node.category] || categoryGlows.romantic;
 
   return (
     <motion.div
@@ -40,18 +9,13 @@ export default function QuestionCard({ node, onAnswer }) {
       className="relative z-10 flex flex-col items-center justify-center min-h-dvh px-6 sm:px-10 md:px-12 lg:px-24 py-16 pb-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+      transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* Background gradient overlay */}
-      <div
-        className={`absolute inset-0 bg-gradient-to-b ${gradient} pointer-events-none`}
-      />
-
       {/* Central glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
-        style={{ background: glow }}
+        style={{ background: 'rgba(139, 92, 246, 0.06)' }}
       />
 
       {/* Content */}
@@ -60,11 +24,23 @@ export default function QuestionCard({ node, onAnswer }) {
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
       >
+        {/* Glassmorphism card backdrop */}
+        <div
+          className="absolute -inset-8 sm:-inset-12 rounded-3xl"
+          style={{
+            background: 'rgba(15, 5, 25, 0.35)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(139, 92, 246, 0.12)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+          }}
+        />
+
         {/* Emoji */}
         <motion.div
-          className="text-5xl mb-6 md:mb-8 md:text-6xl"
+          className="relative text-5xl mb-6 md:mb-8 md:text-6xl"
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
@@ -74,7 +50,7 @@ export default function QuestionCard({ node, onAnswer }) {
 
         {/* Main text */}
         <motion.h1
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight tracking-tight mb-4"
+          className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-tight tracking-tight mb-4 text-violet-50"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,17 +61,19 @@ export default function QuestionCard({ node, onAnswer }) {
 
         {/* Subtext */}
         {node.subtext && (
-                                <motion.p
-                                  className="text-base sm:text-lg text-rose-200/70 font-light max-w-sm sm:max-w-md leading-relaxed mb-12 md:mb-16"                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5, duration: 0.6 }}
-                    >            {node.subtext}
+          <motion.p
+            className="relative text-base sm:text-lg text-violet-200/60 font-light max-w-sm sm:max-w-md leading-relaxed mb-12 md:mb-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
+            {node.subtext}
           </motion.p>
         )}
 
         {/* Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-xs sm:max-w-sm"
+          className="relative flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-xs sm:max-w-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
@@ -126,15 +104,20 @@ function OptionButton({ option, index, isPrimary, total, onAnswer }) {
         ${total === 1 ? 'w-full' : 'flex-1'}
         ${
           isPrimary
-            ? 'bg-gradient-to-r from-rose-500/90 to-pink-500/90 text-white shadow-lg shadow-rose-500/20 border border-rose-400/30'
-            : 'bg-white/5 text-rose-100 border border-white/10 hover:bg-white/10 hover:border-white/20'
+            ? 'text-white shadow-lg border'
+            : 'bg-white/5 text-violet-100 border border-white/10 hover:bg-white/10 hover:border-violet-400/20'
         }
       `}
+      style={isPrimary ? {
+        background: 'linear-gradient(135deg, rgba(139,92,246,0.85) 0%, rgba(124,58,237,0.85) 50%, rgba(139,92,246,0.85) 100%)',
+        borderColor: 'rgba(167,139,250,0.4)',
+        boxShadow: '0 4px 20px rgba(139,92,246,0.25)',
+      } : undefined}
       whileHover={{
         scale: 1.03,
         boxShadow: isPrimary
-          ? '0 8px 30px rgba(244, 63, 94, 0.3)'
-          : '0 4px 20px rgba(255, 255, 255, 0.05)',
+          ? '0 8px 30px rgba(139, 92, 246, 0.35)'
+          : '0 4px 20px rgba(139, 92, 246, 0.1)',
       }}
       whileTap={{ scale: 0.97 }}
       initial={{ opacity: 0, y: 10 }}
