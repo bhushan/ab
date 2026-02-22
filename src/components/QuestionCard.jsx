@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 
-export default function QuestionCard({ node, onAnswer }) {
+export default function QuestionCard({ node, onAnswer, config }) {
   if (!node) return null;
+
+  const tone = config?.tone;
+  const accentHue = tone?.accentHue ?? 270;
+  const accentSat = tone?.accentSat ?? 60;
+  const cardBorder = tone?.cardBorder ?? 'rgba(139, 92, 246, 0.12)';
+  const glowHue = tone?.glowHue ?? 270;
 
   return (
     <motion.div
@@ -12,10 +18,13 @@ export default function QuestionCard({ node, onAnswer }) {
       exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* Central glow */}
+      {/* Central glow — color matches category */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
-        style={{ background: 'rgba(139, 92, 246, 0.06)' }}
+        style={{
+          background: `hsla(${glowHue}, 50%, 50%, 0.06)`,
+          transition: 'background 1.2s ease',
+        }}
       />
 
       {/* Content */}
@@ -26,15 +35,16 @@ export default function QuestionCard({ node, onAnswer }) {
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
         transition={{ duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
       >
-        {/* Glassmorphism card backdrop */}
+        {/* Glassmorphism card backdrop — border tinted by category */}
         <div
           className="absolute -inset-8 sm:-inset-12 rounded-3xl"
           style={{
             background: 'rgba(15, 5, 25, 0.35)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(139, 92, 246, 0.12)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+            border: `1px solid ${cardBorder}`,
+            boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)`,
+            transition: 'border-color 1s ease, box-shadow 1s ease',
           }}
         />
 
@@ -86,6 +96,8 @@ export default function QuestionCard({ node, onAnswer }) {
               isPrimary={i === 0}
               total={node.options.length}
               onAnswer={onAnswer}
+              accentHue={accentHue}
+              accentSat={accentSat}
             />
           ))}
         </motion.div>
@@ -94,7 +106,7 @@ export default function QuestionCard({ node, onAnswer }) {
   );
 }
 
-function OptionButton({ option, index, isPrimary, total, onAnswer }) {
+function OptionButton({ option, index, isPrimary, total, onAnswer, accentHue, accentSat }) {
   return (
     <motion.button
       onClick={() => onAnswer(option)}
@@ -109,14 +121,15 @@ function OptionButton({ option, index, isPrimary, total, onAnswer }) {
         }
       `}
       style={isPrimary ? {
-        background: 'linear-gradient(135deg, rgba(139,92,246,0.85) 0%, rgba(124,58,237,0.85) 50%, rgba(139,92,246,0.85) 100%)',
-        borderColor: 'rgba(167,139,250,0.4)',
-        boxShadow: '0 4px 20px rgba(139,92,246,0.25)',
+        background: `linear-gradient(135deg, hsla(${accentHue}, ${accentSat}%, 55%, 0.85) 0%, hsla(${accentHue + 10}, ${accentSat}%, 48%, 0.85) 50%, hsla(${accentHue}, ${accentSat}%, 55%, 0.85) 100%)`,
+        borderColor: `hsla(${accentHue}, ${accentSat}%, 70%, 0.4)`,
+        boxShadow: `0 4px 20px hsla(${accentHue}, ${accentSat}%, 50%, 0.25)`,
+        transition: 'background 1s ease, border-color 1s ease, box-shadow 1s ease',
       } : undefined}
       whileHover={{
         scale: 1.03,
         boxShadow: isPrimary
-          ? '0 8px 30px rgba(139, 92, 246, 0.35)'
+          ? `0 8px 30px hsla(${accentHue}, ${accentSat}%, 50%, 0.35)`
           : '0 4px 20px rgba(139, 92, 246, 0.1)',
       }}
       whileTap={{ scale: 0.97 }}

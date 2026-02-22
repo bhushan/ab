@@ -20,7 +20,7 @@ export default function AmbientGlow({ mouseX, mouseY, config }) {
     };
   }, [mouseX, mouseY]);
 
-  const hue = 270 + config.progress * 30;
+  const hue = config.tone?.glowHue ?? (270 + config.progress * 30);
   const opacity = 0.04 + config.lightIntensity * 0.04;
 
   return (

@@ -2,13 +2,10 @@
 // step ranges from 0 to totalSteps (typically 12)
 // Each step represents a lunar phase from New Moon → Full Moon,
 // with corresponding weather/atmosphere shifts.
+// Category tones overlay mood-specific colors on each question.
 
 function lerp(a, b, t) {
   return a + (b - a) * t;
-}
-
-function lerpHSL(h1, s1, l1, h2, s2, l2, t) {
-  return [lerp(h1, h2, t), lerp(s1, s2, t), lerp(l1, l2, t)];
 }
 
 // 13 atmosphere presets (steps 0–12) — one per lunar phase
@@ -42,12 +39,33 @@ const PHASE_ATMOSPHERES = [
   { skyH: 280, skyS: 50, skyL: 10, cloudOpacity: 0.0,  mistOpacity: 0.0,  windSpeed: 0.2 },
 ];
 
+// Category-specific tone overlays — each shifts the mood uniquely
+// hueShift: added to base sky hue   accentHue: card/glow hue
+// warmth: 0=cool, 1=warm            sparkle: multiplier on sparkleRate
+// glowHue/glowSat: override glow    cardBorder: rgba border color
+const CATEGORY_TONES = {
+  intro:       { hueShift: 0,   accentHue: 270, accentSat: 60, warmth: 0.3, sparkle: 0.5,  glowHue: 270, glowSat: 60, cardBorder: 'rgba(139, 92, 246, 0.15)' },
+  playful:     { hueShift: -15, accentHue: 320, accentSat: 70, warmth: 0.4, sparkle: 1.4,  glowHue: 320, glowSat: 65, cardBorder: 'rgba(236, 72, 153, 0.18)' },
+  destiny:     { hueShift: 10,  accentHue: 260, accentSat: 75, warmth: 0.5, sparkle: 1.2,  glowHue: 265, glowSat: 70, cardBorder: 'rgba(124, 58, 237, 0.20)' },
+  memory:      { hueShift: -5,  accentHue: 30,  accentSat: 55, warmth: 0.7, sparkle: 0.7,  glowHue: 35,  glowSat: 50, cardBorder: 'rgba(251, 191, 36, 0.15)' },
+  moonlight:   { hueShift: 5,   accentHue: 220, accentSat: 50, warmth: 0.2, sparkle: 1.0,  glowHue: 210, glowSat: 45, cardBorder: 'rgba(147, 197, 253, 0.18)' },
+  romantic:    { hueShift: -10, accentHue: 340, accentSat: 65, warmth: 0.8, sparkle: 0.9,  glowHue: 345, glowSat: 60, cardBorder: 'rgba(244, 63, 94, 0.18)' },
+  future:      { hueShift: 15,  accentHue: 200, accentSat: 60, warmth: 0.4, sparkle: 1.1,  glowHue: 195, glowSat: 55, cardBorder: 'rgba(56, 189, 248, 0.16)' },
+  cinematic:   { hueShift: 5,   accentHue: 280, accentSat: 70, warmth: 0.6, sparkle: 1.3,  glowHue: 280, glowSat: 65, cardBorder: 'rgba(167, 139, 250, 0.22)' },
+  proposal:    { hueShift: 0,   accentHue: 45,  accentSat: 80, warmth: 1.0, sparkle: 1.8,  glowHue: 45,  glowSat: 75, cardBorder: 'rgba(250, 204, 21, 0.25)' },
+  celebration: { hueShift: 0,   accentHue: 50,  accentSat: 85, warmth: 1.0, sparkle: 2.0,  glowHue: 50,  glowSat: 80, cardBorder: 'rgba(253, 224, 71, 0.30)' },
+};
+
 function getAtmosphere(step) {
   const idx = Math.min(step, PHASE_ATMOSPHERES.length - 1);
   return PHASE_ATMOSPHERES[idx];
 }
 
-export function getVisualConfig(step, totalSteps = 12) {
+function getCategoryTone(category) {
+  return CATEGORY_TONES[category] || CATEGORY_TONES.intro;
+}
+
+export function getVisualConfig(step, totalSteps = 12, category = 'intro') {
   const t = Math.min(step / totalSteps, 1); // 0 → 1
 
   // Moon phase: 0 = new moon, 1 = full moon
@@ -56,30 +74,40 @@ export function getVisualConfig(step, totalSteps = 12) {
   // Weather atmosphere for this lunar phase
   const atmo = getAtmosphere(step);
 
-  // Sky colors driven by atmosphere preset
-  const bgH = atmo.skyH;
+  // Category-specific tone overlay
+  const tone = getCategoryTone(category);
+
+  // Sky colors: base from atmosphere, shifted by category
+  const bgH = atmo.skyH + tone.hueShift;
   const bgS = atmo.skyS;
   const bgL = atmo.skyL;
 
-  const [accentH, accentS, accentL] = lerpHSL(270, 70, 50, 280, 65, 65, t);
-  // Glow shifts from cool purple (new moon) to warm gold (full moon)
-  const [glowH, glowS, glowL] = lerpHSL(265, 80, 30, 45, 70, 60, t);
+  // Accent from category tone (not just progress)
+  const accentH = tone.accentHue;
+  const accentS = tone.accentSat;
+  const accentL = lerp(50, 65, t);
+
+  // Glow from category tone, brightening with progress
+  const glowH = tone.glowHue;
+  const glowS = tone.glowSat;
+  const glowL = lerp(30, 60, t);
 
   return {
     step,
     progress: t,
     moonPhase,
+    category,
 
-    // Background colors (atmosphere-driven)
+    // Background colors (atmosphere + category tint)
     bgDark: `hsl(${bgH}, ${bgS}%, ${bgL}%)`,
     bgMid: `hsl(${bgH + 5}, ${bgS - 10}%, ${bgL + 3}%)`,
     bgLight: `hsl(${bgH + 10}, ${bgS - 20}%, ${bgL + 6}%)`,
 
-    // Accent colors for UI elements
+    // Category-driven accent colors
     accent: `hsl(${accentH}, ${accentS}%, ${accentL}%)`,
     accentMuted: `hsl(${accentH}, ${accentS - 20}%, ${accentL - 15}%)`,
 
-    // Glow/highlight color (shifts toward gold at end)
+    // Category-driven glow color
     glow: `hsl(${glowH}, ${glowS}%, ${glowL}%)`,
     glowAlpha: (a) => `hsla(${glowH}, ${glowS}%, ${glowL}%, ${a})`,
 
@@ -91,19 +119,22 @@ export function getVisualConfig(step, totalSteps = 12) {
     moonGlow: lerp(0.05, 1.0, t),
     moonSize: lerp(0.85, 1.05, t),
 
-    // Ambient light intensity — dark new moon to luminous full moon
-    lightIntensity: lerp(0.15, 0.85, t),
+    // Ambient light — warmth from category blended with progress
+    lightIntensity: lerp(0.15, 0.85, t) * (0.8 + tone.warmth * 0.2),
 
     // Animation speeds — restless early, calm at full moon
     breathingSpeed: lerp(5, 3.5, t),
-    sparkleRate: lerp(0.15, 1.0, t),
+    sparkleRate: lerp(0.15, 1.0, t) * tone.sparkle,
 
-    // Nebula opacity — heavy mist early, clear later
+    // Nebula opacity
     nebulaOpacity: lerp(0.08, 0.35, t),
 
     // Weather parameters
     cloudOpacity: atmo.cloudOpacity,
     mistOpacity: atmo.mistOpacity,
     windSpeed: atmo.windSpeed,
+
+    // Category tone (for components that want direct access)
+    tone,
   };
 }

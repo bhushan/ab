@@ -32,7 +32,7 @@ export default function App() {
   const isFinal = currentNode?.type === 'final';
   const isCelebration = currentNode?.type === 'celebration';
 
-  const visualConfig = getVisualConfig(step, TOTAL_STEPS);
+  const visualConfig = getVisualConfig(step, TOTAL_STEPS, currentNode?.category);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -46,7 +46,7 @@ export default function App() {
         {isFinal || isCelebration ? (
           <FinalProposal key="final" node={currentNode} onAnswer={handleAnswer} />
         ) : (
-          <QuestionCard key={path[step]} node={currentNode} onAnswer={handleAnswer} />
+          <QuestionCard key={path[step]} node={currentNode} onAnswer={handleAnswer} config={visualConfig} />
         )}
       </AnimatePresence>
 
