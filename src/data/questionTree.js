@@ -1,9 +1,9 @@
 /**
- * Dynamic Valentine's journey engine.
+ * Valentine's journey engine with true diamond branching.
  *
- * 100 unique questions across emotional categories.
- * Each page load builds a fresh 20-question path following a curated arc.
- * Both answer choices always advance — the journey converges to the final proposal.
+ * 12 questions across 3 segments. Each segment splits into 2 branches
+ * then reconverges — giving 8 unique paths (2³ choices).
+ * Moon phases align 1:1: 12 questions = 12 phase steps → Full Moon at proposal.
  */
 
 // ═══════════════════════════════════════════════════════════════
@@ -59,7 +59,7 @@ const fixedNodes = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// 100-QUESTION BANK
+// QUESTION BANK
 // ═══════════════════════════════════════════════════════════════
 
 const QUESTION_BANK = [
@@ -1081,31 +1081,37 @@ const QUESTION_BANK = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// JOURNEY BUILDER
+// DIAMOND-BRANCH JOURNEY BUILDER
 // ═══════════════════════════════════════════════════════════════
 
-// 20-step emotional arc: playful openings -> deeper connection -> cinematic close.
-const CATEGORY_FLOW = [
-  'playful',
-  'destiny',
-  'memory',
-  'moonlight',
-  'future',
-  'support',
-  'romantic',
-  'cinematic',
-  'playful',
-  'memory',
-  'future',
-  'moonlight',
-  'support',
-  'romantic',
-  'destiny',
-  'cinematic',
-  'playful',
-  'future',
-  'romantic',
-  'moonlight',
+/**
+ * 3 segments × 4 user-visible steps = 12 questions.
+ * Each segment: entry → 2 branches (2 Qs each) → checkpoint.
+ * User picks branch at entry, walks 2 questions, reconverges at checkpoint.
+ * Categories align with moon phases (new moon → full moon).
+ */
+const SEGMENT_PLAN = [
+  // Segment 1: New Moon → First Quarter (Q1–Q4)
+  {
+    entry: 'moonlight',           // Q1  – dark, mysterious
+    branchA: ['destiny', 'memory'],  // Q2a, Q3a
+    branchB: ['destiny', 'memory'],  // Q2b, Q3b (different questions, same categories)
+    checkpoint: 'playful',        // Q4  – lighten up
+  },
+  // Segment 2: First Quarter → Waxing Gibbous (Q5–Q8)
+  {
+    entry: 'memory',              // Q5  – deeper memories
+    branchA: ['support', 'future'],  // Q6a, Q7a
+    branchB: ['support', 'future'],  // Q6b, Q7b
+    checkpoint: 'romantic',       // Q8  – heart opening
+  },
+  // Segment 3: Waxing Gibbous → Almost Full (Q9–Q12)
+  {
+    entry: 'support',             // Q9  – vulnerable depth
+    branchA: ['romantic', 'cinematic'], // Q10a, Q11a
+    branchB: ['romantic', 'cinematic'], // Q10b, Q11b
+    checkpoint: 'cinematic',      // Q12 – grand crescendo → preProposal
+  },
 ];
 
 /** Fisher-Yates shuffle */
@@ -1118,44 +1124,78 @@ function shuffle(arr) {
   return a;
 }
 
-/** Build a unique 20-question journey (runs once on module load) */
-function buildJourney() {
-  const questions = [];
+/** Pick a random question from category, removing it from the pool */
+function pickFrom(pools, category) {
+  const pool = pools[category];
+  if (!pool || pool.length === 0) {
+    throw new Error(`No questions left for category: ${category}`);
+  }
+  return pool.pop();
+}
 
-  // Pre-shuffle each category once, then draw without replacement for this page load.
-  const categoryPools = {};
-  const categoryCursor = {};
-  for (const category of [...new Set(CATEGORY_FLOW)]) {
-    categoryPools[category] = shuffle(QUESTION_BANK.filter((q) => q.category === category));
-    categoryCursor[category] = 0;
+/** Build a diamond-branching 12-question journey (runs once per page load) */
+function buildJourney() {
+  // Shuffle each category pool
+  const pools = {};
+  for (const cat of [...new Set(QUESTION_BANK.map((q) => q.category))]) {
+    pools[cat] = shuffle(QUESTION_BANK.filter((q) => q.category === cat));
   }
 
-  for (const category of CATEGORY_FLOW) {
-    const pool = categoryPools[category];
-    const cursor = categoryCursor[category];
+  const allNodes = []; // all question nodes (18 total, user sees 12)
+  let nodeCounter = 0;
 
-    if (!pool || pool.length === 0) {
-      continue;
+  function makeNode(category) {
+    const base = pickFrom(pools, category);
+    const id = `dq_${nodeCounter++}`;
+    return { ...base, id, type: 'question' };
+  }
+
+  const segmentEntries = []; // first node of each segment (for wiring)
+
+  for (let s = 0; s < SEGMENT_PLAN.length; s++) {
+    const seg = SEGMENT_PLAN[s];
+
+    const entry = makeNode(seg.entry);
+    const branchA = seg.branchA.map((cat) => makeNode(cat));
+    const branchB = seg.branchB.map((cat) => makeNode(cat));
+    const checkpoint = makeNode(seg.checkpoint);
+
+    // Wire entry → branches
+    entry.options = [
+      { ...entry.options[0], nextId: branchA[0].id },
+      { ...entry.options[1], nextId: branchB[0].id },
+    ];
+
+    // Wire branchA linearly → checkpoint
+    for (let i = 0; i < branchA.length; i++) {
+      const nextId = i < branchA.length - 1 ? branchA[i + 1].id : checkpoint.id;
+      branchA[i].options = branchA[i].options.map((o) => ({ ...o, nextId }));
     }
 
-    // Fallback wraps only if a category is requested more times than available questions.
-    const picked = pool[cursor % pool.length];
-    categoryCursor[category] = cursor + 1;
+    // Wire branchB linearly → checkpoint
+    for (let i = 0; i < branchB.length; i++) {
+      const nextId = i < branchB.length - 1 ? branchB[i + 1].id : checkpoint.id;
+      branchB[i].options = branchB[i].options.map((o) => ({ ...o, nextId }));
+    }
 
-    questions.push({
-      ...picked,
-      id: `dq_${questions.length}`,
-      type: 'question',
-    });
+    // Checkpoint → next segment entry or preProposal (wired after loop)
+    // Leave checkpoint.options nextId as null for now
+    checkpoint.options = checkpoint.options.map((o) => ({ ...o, nextId: null }));
+
+    allNodes.push(entry, ...branchA, ...branchB, checkpoint);
+    segmentEntries.push({ entry, checkpoint });
   }
 
-  // Wire each question → next question, last question → preProposal
-  for (let i = 0; i < questions.length; i++) {
-    const nextId = questions[i + 1]?.id || 'preProposal';
-    questions[i].options = questions[i].options.map((o) => ({ ...o, nextId }));
+  // Wire checkpoints → next segment entry (or preProposal for last)
+  for (let s = 0; s < segmentEntries.length; s++) {
+    const { checkpoint } = segmentEntries[s];
+    const nextId = s < segmentEntries.length - 1
+      ? segmentEntries[s + 1].entry.id
+      : 'preProposal';
+    checkpoint.options = checkpoint.options.map((o) => ({ ...o, nextId }));
   }
 
-  return questions;
+  return allNodes;
 }
 
 // Build on module load — gives a fresh journey per page load
@@ -1175,7 +1215,7 @@ const nodes = {
 // ═══════════════════════════════════════════════════════════════
 
 export const START_NODE_ID = 'intro';
-export const TOTAL_STEPS = CATEGORY_FLOW.length; // 20
+export const TOTAL_STEPS = 12;
 
 export function getNode(id) {
   return nodes[id] || null;

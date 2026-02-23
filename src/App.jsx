@@ -19,7 +19,8 @@ export default function App() {
   const questionsAsked = visitedNodeIds
     .reduce((count, id) => count + (getNode(id)?.type === 'question' ? 1 : 0), 0);
   const waxingMoonStep = Math.min(Math.max(questionsAsked - 1, 0), TOTAL_STEPS - 1);
-  const moonStep = isValentineQuestion ? TOTAL_STEPS : waxingMoonStep;
+  const isCelebrationNode = currentNode?.type === 'celebration';
+  const moonStep = (isValentineQuestion || isCelebrationNode) ? TOTAL_STEPS : waxingMoonStep;
 
   function handleAnswer(option) {
     const node = getNode(currentNodeId);
